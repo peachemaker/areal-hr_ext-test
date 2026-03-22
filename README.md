@@ -17,3 +17,6 @@
 * 'git checkout main'        -- Переключиться на main
 * 'git merge feature'        -- Слить ветку
 * 'git branch -d feature'    -- Удалить ветку
+
+## Схема базы данных
+![image](diagramm.png)
