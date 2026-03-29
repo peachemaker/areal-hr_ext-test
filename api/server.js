@@ -170,5 +170,5 @@ app.delete('/positions/:id', async (req, res) => {
 
 const PORT = parseInt(process.env.PORT) || 3000;
 app.listen(PORT, () => {
-  console.log(`http://localhost:${PORT}`);
+  console.log(`http://localhost:${PORT}`);оор
 });
