@@ -11,8 +11,6 @@ export const DatabaseProvider: Provider = {
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
     });
-
-    // Создаём таблицы при старте (для разработки)
     const client = await pool.connect();
     try {
       await client.query(`
@@ -24,7 +22,25 @@ export const DatabaseProvider: Provider = {
           deleted_at TIMESTAMP
         );
       `);
-      console.log('Tables created/verified');
+      await client.query(`
+        CREATE TABLE IF NOT EXISTS positions (
+          id SERIAL PRIMARY KEY,
+          name VARCHAR(255) NOT NULL,
+          created_at TIMESTAMP DEFAULT NOW(),
+          deleted_at TIMESTAMP
+        );
+      `);
+      await client.query(`
+        CREATE TABLE IF NOT EXISTS departments (
+          id SERIAL PRIMARY KEY,
+          organization_id INTEGER REFERENCES organizations(id) ON DELETE SET NULL,
+          parent_department_id INTEGER REFERENCES departments(id) ON DELETE SET NULL,
+          name VARCHAR(255) NOT NULL,
+          comment TEXT,
+          created_at TIMESTAMP DEFAULT NOW(),
+          deleted_at TIMESTAMP
+        );
+      `);
     } catch (err) {
       console.error('Table creation error:', err);
     } finally {

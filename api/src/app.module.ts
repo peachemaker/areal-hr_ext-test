@@ -5,6 +5,8 @@ import { AppService } from './app.service';
 import * as path from 'path';
 import { DatabaseModule } from './database/database.module';
 import { OrganizationsModule } from './organizations/organization.module';
+import { DepartmentsModule } from './departments/department.module';
+import { PositionsModule } from './positions/position.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -13,6 +15,8 @@ import { OrganizationsModule } from './organizations/organization.module';
     }),
     DatabaseModule,
     OrganizationsModule,
+    DepartmentsModule,
+    PositionsModule
   ],
   controllers: [AppController],
   providers: [AppService],
