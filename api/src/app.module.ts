@@ -7,6 +7,7 @@ import { DatabaseModule } from './database/database.module';
 import { OrganizationsModule } from './organizations/organization.module';
 import { DepartmentsModule } from './departments/department.module';
 import { PositionsModule } from './positions/position.module';
+import { EmployeesModule } from './employees/employee.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -16,7 +17,8 @@ import { PositionsModule } from './positions/position.module';
     DatabaseModule,
     OrganizationsModule,
     DepartmentsModule,
-    PositionsModule
+    PositionsModule,
+    EmployeesModule
   ],
   controllers: [AppController],
   providers: [AppService],
