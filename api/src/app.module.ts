@@ -9,6 +9,7 @@ import { DepartmentsModule } from './departments/department.module';
 import { PositionsModule } from './positions/position.module';
 import { EmployeesModule } from './employees/employee.module';
 import { FilesModule } from './files/file.module';
+import { HrOperationsModule } from './hr_operations/hr_op.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -20,7 +21,8 @@ import { FilesModule } from './files/file.module';
     DepartmentsModule,
     PositionsModule,
     EmployeesModule,
-    FilesModule
+    FilesModule,
+    HrOperationsModule
   ],
   controllers: [AppController],
   providers: [AppService],
