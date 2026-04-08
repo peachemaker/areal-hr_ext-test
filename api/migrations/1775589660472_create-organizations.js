@@ -3,10 +3,15 @@ exports.up = (pgm) => {
     id: 'id',
     name: { type: 'varchar(255)', notNull: true },
     comment: { type: 'text' },
-    created_at: { 
-      type: 'timestamp', 
-      notNull: true, 
-      default: pgm.func('current_timestamp') 
+    created_at: {
+      type: 'timestamp',
+      notNull: true,
+      default: pgm.func('current_timestamp'),
+    },
+    updated_at: {
+      type: 'timestamp',
+      notNull: true,
+      default: pgm.func('current_timestamp'),
     },
     deleted_at: { type: 'timestamp' },
   });

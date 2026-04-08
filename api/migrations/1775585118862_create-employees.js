@@ -1,5 +1,3 @@
-exports.shorthands = undefined;
-
 exports.up = (pgm) => {
   pgm.createTable('employees', {
     id: 'id',
@@ -20,10 +18,12 @@ exports.up = (pgm) => {
     address_apartment: { type: 'varchar(20)' },
     created_at: {
       type: 'timestamp',
+      notNull: true,
       default: pgm.func('current_timestamp'),
     },
     updated_at: {
       type: 'timestamp',
+      notNull: true,
       default: pgm.func('current_timestamp'),
     },
     deleted_at: { type: 'timestamp' },

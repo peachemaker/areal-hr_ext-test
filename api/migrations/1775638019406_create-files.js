@@ -1,18 +1,13 @@
-exports.up = (pgm) => {
-  pgm.createTable('departments', {
+export const up = (pgm) => {
+  pgm.createTable('files', {
     id: 'id',
-    organization_id: {
+    employee_id: {
       type: 'integer',
-      references: '"organizations"',
-      onDelete: 'SET NULL',
-    },
-    parent_department_id: {
-      type: 'integer',
-      references: '"departments"',
+      references: '"employees"',
       onDelete: 'SET NULL',
     },
     name: { type: 'varchar(255)', notNull: true },
-    comment: { type: 'text' },
+    path: { type: 'varchar(500)', notNull: true },
     created_at: {
       type: 'timestamp',
       notNull: true,
@@ -27,6 +22,6 @@ exports.up = (pgm) => {
   });
 };
 
-exports.down = (pgm) => {
-  pgm.dropTable('departments');
+export const down = (pgm) => {
+  pgm.dropTable('files');
 };
