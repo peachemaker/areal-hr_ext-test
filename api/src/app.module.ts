@@ -8,6 +8,7 @@ import { OrganizationsModule } from './organizations/organization.module';
 import { DepartmentsModule } from './departments/department.module';
 import { PositionsModule } from './positions/position.module';
 import { EmployeesModule } from './employees/employee.module';
+import { FilesModule } from './files/file.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -18,7 +19,8 @@ import { EmployeesModule } from './employees/employee.module';
     OrganizationsModule,
     DepartmentsModule,
     PositionsModule,
-    EmployeesModule
+    EmployeesModule,
+    FilesModule
   ],
   controllers: [AppController],
   providers: [AppService],
