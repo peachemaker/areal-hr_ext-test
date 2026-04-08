@@ -10,6 +10,7 @@ import { PositionsModule } from './positions/position.module';
 import { EmployeesModule } from './employees/employee.module';
 import { FilesModule } from './files/file.module';
 import { HrOperationsModule } from './hr_operations/hr_op.module';
+import { ChangeHistoryModule } from './change_history/change_history.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -22,7 +23,8 @@ import { HrOperationsModule } from './hr_operations/hr_op.module';
     PositionsModule,
     EmployeesModule,
     FilesModule,
-    HrOperationsModule
+    HrOperationsModule,
+    ChangeHistoryModule
   ],
   controllers: [AppController],
   providers: [AppService],
