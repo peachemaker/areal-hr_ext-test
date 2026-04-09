@@ -11,14 +11,14 @@ export class OrganizationsService {
     const { name, comment } = dto;
     const result = await this.pool.query(
       'INSERT INTO organizations (name, comment) VALUES ($1, $2) RETURNING *',
-      [name, comment || null]
+      [name, comment || null],
     );
     return result.rows[0];
   }
 
   async findAll() {
     const result = await this.pool.query(
-      'SELECT * FROM organizations WHERE deleted_at IS NULL ORDER BY id'
+      'SELECT * FROM organizations WHERE deleted_at IS NULL ORDER BY id',
     );
     return result.rows;
   }
@@ -26,7 +26,7 @@ export class OrganizationsService {
   async findOne(id: number) {
     const result = await this.pool.query(
       'SELECT * FROM organizations WHERE id = $1 AND deleted_at IS NULL',
-      [id]
+      [id],
     );
     if (result.rows.length === 0) {
       throw new NotFoundException('Organization not found');
@@ -35,14 +35,30 @@ export class OrganizationsService {
   }
 
   async update(id: number, dto: UpdateOrganizationDto) {
-    const { name, comment } = dto;
+    const keys = Object.keys(dto);
+
+    if (keys.length === 0) {
+      const currentState = await this.pool.query(
+        'SELECT * FROM organizations WHERE id = $1 AND deleted_at IS NULL',
+        [id],
+      );
+      if (currentState.rows.length === 0) {
+        throw new NotFoundException('Organization not found');
+      }
+      return currentState.rows[0];
+    }
+
+    const setClause = keys
+      .map((key, index) => `${key} = $${index + 2}`)
+      .join(', ');
+    const values = [id, ...Object.values(dto)];
+
     const result = await this.pool.query(
       `UPDATE organizations 
-       SET name = COALESCE($1, name), 
-           comment = COALESCE($2, comment) 
-       WHERE id = $3 AND deleted_at IS NULL 
+       SET ${setClause}, updated_at = CURRENT_TIMESTAMP 
+       WHERE id = $1 AND deleted_at IS NULL 
        RETURNING *`,
-      [name, comment, id]
+      values,
     );
     if (result.rows.length === 0) {
       throw new NotFoundException('Organization not found');
@@ -53,7 +69,7 @@ export class OrganizationsService {
   async softDelete(id: number) {
     const result = await this.pool.query(
       'UPDATE organizations SET deleted_at = NOW() WHERE id = $1 AND deleted_at IS NULL RETURNING id',
-      [id]
+      [id],
     );
     if (result.rows.length === 0) {
       throw new NotFoundException('Organization not found');

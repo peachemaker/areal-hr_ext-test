@@ -13,7 +13,12 @@ export class DepartmentsService {
       `INSERT INTO departments (organization_id, parent_department_id, name, comment)
        VALUES ($1, $2, $3, $4)
        RETURNING *`,
-      [organization_id || null, parent_department_id || null, name, comment || null]
+      [
+        organization_id || null,
+        parent_department_id || null,
+        name,
+        comment || null,
+      ],
     );
     return result.rows[0];
   }
@@ -51,20 +56,34 @@ export class DepartmentsService {
   }
 
   async update(id: number, dto: UpdateDepartmentDto) {
-    const { organization_id, parent_department_id, name, comment } = dto;
+    const keys = Object.keys(dto);
+
+    if (keys.length === 0) {
+      const currentState = await this.pool.query(
+        `SELECT * FROM departments WHERE id = $1 AND deleted_at IS NULL`,
+        [id],
+      );
+      if (currentState.rows.length === 0) {
+        throw new NotFoundException('Department not found');
+      }
+      return currentState.rows[0];
+    }
+    const setClause = keys
+      .map((key, index) => `${key} = $${index + 2}`)
+      .join(', ');
+    const values = [id, ...Object.values(dto)];
     const result = await this.pool.query(
-      `UPDATE departments
-       SET organization_id = COALESCE($1, organization_id),
-           parent_department_id = COALESCE($2, parent_department_id),
-           name = COALESCE($3, name),
-           comment = COALESCE($4, comment)
-       WHERE id = $5 AND deleted_at IS NULL
-       RETURNING *`,
-      [organization_id, parent_department_id, name, comment, id]
+      `UPDATE departments 
+     SET ${setClause}, updated_at = CURRENT_TIMESTAMP 
+     WHERE id = $1 AND deleted_at IS NULL 
+     RETURNING *`,
+      values,
     );
+
     if (result.rows.length === 0) {
       throw new NotFoundException('Department not found');
     }
+
     return result.rows[0];
   }
 
@@ -73,7 +92,7 @@ export class DepartmentsService {
       `UPDATE departments SET deleted_at = NOW()
        WHERE id = $1 AND deleted_at IS NULL
        RETURNING id`,
-      [id]
+      [id],
     );
     if (result.rowCount === 0) {
       throw new NotFoundException('Department not found');

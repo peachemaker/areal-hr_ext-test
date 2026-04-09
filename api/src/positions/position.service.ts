@@ -11,14 +11,14 @@ export class PositionsService {
     const { name } = dto;
     const result = await this.pool.query(
       'INSERT INTO positions (name) VALUES ($1) RETURNING *',
-      [name]
+      [name],
     );
     return result.rows[0];
   }
 
   async findAll() {
     const result = await this.pool.query(
-      'SELECT * FROM positions WHERE deleted_at IS NULL ORDER BY name'
+      'SELECT * FROM positions WHERE deleted_at IS NULL ORDER BY name',
     );
     return result.rows;
   }
@@ -26,7 +26,7 @@ export class PositionsService {
   async findOne(id: number) {
     const result = await this.pool.query(
       'SELECT * FROM positions WHERE id = $1 AND deleted_at IS NULL',
-      [id]
+      [id],
     );
     if (result.rows.length === 0) {
       throw new NotFoundException('Position not found');
@@ -35,10 +35,30 @@ export class PositionsService {
   }
 
   async update(id: number, dto: UpdatePositionDto) {
-    const { name } = dto;
+    const keys = Object.keys(dto);
+
+    if (keys.length === 0) {
+      const currentState = await this.pool.query(
+        'SELECT * FROM positions WHERE id = $1 AND deleted_at IS NULL',
+        [id],
+      );
+      if (currentState.rows.length === 0) {
+        throw new NotFoundException('Position not found');
+      }
+      return currentState.rows[0];
+    }
+
+    const setClause = keys
+      .map((key, index) => `${key} = $${index + 2}`)
+      .join(', ');
+    const values = [id, ...Object.values(dto)];
+
     const result = await this.pool.query(
-      'UPDATE positions SET name = COALESCE($1, name) WHERE id = $2 AND deleted_at IS NULL RETURNING *',
-      [name, id]
+      `UPDATE positions 
+       SET ${setClause}, updated_at = CURRENT_TIMESTAMP 
+       WHERE id = $1 AND deleted_at IS NULL 
+       RETURNING *`,
+      values,
     );
     if (result.rows.length === 0) {
       throw new NotFoundException('Position not found');
@@ -49,7 +69,7 @@ export class PositionsService {
   async softDelete(id: number) {
     const result = await this.pool.query(
       'UPDATE positions SET deleted_at = NOW() WHERE id = $1 AND deleted_at IS NULL RETURNING id',
-      [id]
+      [id],
     );
     if (result.rows.length === 0) {
       throw new NotFoundException('Position not found');
