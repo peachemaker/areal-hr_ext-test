@@ -1,4 +1,9 @@
-import { Injectable, Inject, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { Pool } from 'pg';
 import { CreateHrOperationDto } from './create.dto';
 import { UpdateHrOperationDto } from './update.dto';
@@ -8,12 +13,27 @@ export class HrOperationsService {
   constructor(@Inject('PG_POOL') private pool: Pool) {}
 
   async create(createDto: CreateHrOperationDto) {
-    const keys = Object.keys(createDto);
-    const values = Object.values(createDto);
+    const allowedKeys = [
+      'employee_id',
+      'action_type',
+      'department_id',
+      'position_id',
+      'salary',
+    ];
+    const keys = Object.keys(createDto).filter((key) =>
+      allowedKeys.includes(key),
+    );
+    if (keys.length === 0) {
+      throw new BadRequestException('Валидные поля не были переданы');
+    }
+    const columns = keys.join(', ');
+    const values = keys.map(
+      (key) => createDto[key as keyof CreateHrOperationDto],
+    );
     const placeholders = keys.map((_, index) => `$${index + 1}`).join(', ');
 
     const query = `
-      INSERT INTO hr_operations (${keys.join(', ')}) 
+      INSERT INTO hr_operations (${columns}) 
       VALUES (${placeholders}) 
       RETURNING *;
     `;
@@ -52,7 +72,9 @@ export class HrOperationsService {
     const keys = Object.keys(updateDto);
     if (keys.length === 0) return this.findOne(id);
 
-    const setClause = keys.map((key, index) => `${key} = $${index + 2}`).join(', ');
+    const setClause = keys
+      .map((key, index) => `${key} = $${index + 2}`)
+      .join(', ');
     const values = [id, ...Object.values(updateDto)];
 
     const query = `

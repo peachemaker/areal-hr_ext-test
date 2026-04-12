@@ -1,4 +1,9 @@
-import { Injectable, Inject, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { Pool } from 'pg';
 import { CreateEmployeeDto } from './create.dto';
 import { UpdateEmployeeDto } from './update.dto';
@@ -8,12 +13,39 @@ export class EmployeesService {
   constructor(@Inject('PG_POOL') private pool: Pool) {}
 
   async create(createEmployeeDto: CreateEmployeeDto) {
-    const keys = Object.keys(createEmployeeDto);
-    const values = Object.values(createEmployeeDto);
+    const allowedKeys = [
+      'last_name',
+      'first_name',
+      'patronymic',
+      'department_id,',
+      'position_id',
+      'birth_date',
+      'passport_series',
+      'passport_number',
+      'passport_issue_date',
+      'passport_department_code',
+      'passport_issued_by',
+      'address_region',
+      'address_locality',
+      'address_street',
+      'address_house',
+      'address_block',
+      'address_apartment',
+    ];
+    const keys = Object.keys(createEmployeeDto).filter((key) =>
+      allowedKeys.includes(key),
+    );
+    if (keys.length === 0) {
+      throw new BadRequestException('Валидные поля не были переданы');
+    }
+    const columns = keys.join(', ');
+    const values = keys.map(
+      (key) => createEmployeeDto[key as keyof CreateEmployeeDto],
+    );
     const placeholders = keys.map((_, index) => `$${index + 1}`).join(', ');
 
     const query = `
-      INSERT INTO employees (${keys.join(', ')}) 
+      INSERT INTO employees (${columns}) 
       VALUES (${placeholders}) 
       RETURNING *;
     `;
@@ -44,7 +76,9 @@ export class EmployeesService {
       return this.findOne(id);
     }
 
-    const setClause = keys.map((key, index) => `${key} = $${index + 2}`).join(', ');
+    const setClause = keys
+      .map((key, index) => `${key} = $${index + 2}`)
+      .join(', ');
     const values = [id, ...Object.values(updateEmployeeDto)];
 
     const query = `
@@ -57,7 +91,9 @@ export class EmployeesService {
     const result = await this.pool.query(query, values);
 
     if (result.rows.length === 0) {
-      throw new NotFoundException(`Сотрудник с ID ${id} не найден или был удален`);
+      throw new NotFoundException(
+        `Сотрудник с ID ${id} не найден или был удален`,
+      );
     }
     return result.rows[0];
   }
