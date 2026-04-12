@@ -2,6 +2,7 @@ import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { Pool } from 'pg';
 import { CreateDepartmentDto } from './create.dto';
 import { UpdateDepartmentDto } from './update.dto';
+import { ConflictException } from '@nestjs/common';
 
 @Injectable()
 export class DepartmentsService {
@@ -9,6 +10,7 @@ export class DepartmentsService {
 
   async create(dto: CreateDepartmentDto) {
     const { organization_id, parent_department_id, name, comment } = dto;
+    try {
     const result = await this.pool.query(
       `INSERT INTO departments (organization_id, parent_department_id, name, comment)
        VALUES ($1, $2, $3, $4)
@@ -21,6 +23,13 @@ export class DepartmentsService {
       ],
     );
     return result.rows[0];
+  } catch (error) {
+    const pgError = error as {code?: string}
+    if (pgError.code === '23505') {
+      throw new ConflictException ("Отдел с таким названием уже существует в этой организации")
+    }
+    throw error;
+  }
   }
 
   async findAll() {
