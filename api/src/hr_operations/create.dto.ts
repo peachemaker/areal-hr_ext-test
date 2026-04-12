@@ -3,7 +3,7 @@ import { IsInt, IsString, IsOptional, IsNumber, IsDateString, Length, IsNotEmpty
 export class CreateHrOperationDto {
   @IsInt({ message: 'ID сотрудника должен быть числом' })
   @IsNotEmpty({ message: 'ID сотрудника обязателен' })
-  employee_id?: number;
+  employee_id: number;
 
   @IsString()
   @IsOptional()

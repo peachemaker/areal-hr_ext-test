@@ -11,12 +11,12 @@ export class CreateEmployeeDto {
   @IsString()
   @IsNotEmpty({ message: 'Фамилия обязательна' })
   @Length(1, 100)
-  last_name?: string;
+  last_name: string;
 
   @IsString()
   @IsNotEmpty({ message: 'Имя обязательно' })
   @Length(1, 100)
-  first_name?: string;
+  first_name: string;
 
   @IsOptional()
   @IsString()
