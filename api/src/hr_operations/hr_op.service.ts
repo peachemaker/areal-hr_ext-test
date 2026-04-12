@@ -13,6 +13,12 @@ export class HrOperationsService {
   constructor(@Inject('PG_POOL') private pool: Pool) {}
 
   async create(createDto: CreateHrOperationDto) {
+    const employeeCheck = await this.pool.query(
+      'SELECT id FROM employees WHERE id=$1 AND deleted_at is NULL', [createDto.employee_id]
+    );
+    if (employeeCheck.rows.length === 0) {
+      throw new NotFoundException(`Сотрудник с ID ${createDto.employee_id} не найден`);
+    }
     const allowedKeys = [
       'employee_id',
       'action_type',

@@ -8,6 +8,12 @@ export class FilesService {
   constructor(@Inject('PG_POOL') private pool: Pool) {}
 
   async create(createFileDto: CreateFileDto) {
+    const employeeCheck = await this.pool.query(
+      'SELECT id FROM employees WHERE id=$1 AND deleted_at is NULL', [createFileDto.employee_id]
+    );
+    if (employeeCheck.rows.length === 0) {
+      throw new NotFoundException(`Сотрудник с ID ${createFileDto.employee_id} не найден`);
+    }
     const { employee_id, name, path } = createFileDto;
     
     const query = `
