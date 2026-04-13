@@ -29,7 +29,7 @@ export class PositionsService {
       [id],
     );
     if (result.rows.length === 0) {
-      throw new NotFoundException('Position not found');
+      throw new NotFoundException('Должность не найдена');
     }
     return result.rows[0];
   }
@@ -43,7 +43,7 @@ export class PositionsService {
         [id],
       );
       if (currentState.rows.length === 0) {
-        throw new NotFoundException('Position not found');
+        throw new NotFoundException('Должность не найдена');
       }
       return currentState.rows[0];
     }
@@ -61,7 +61,7 @@ export class PositionsService {
       values,
     );
     if (result.rows.length === 0) {
-      throw new NotFoundException('Position not found');
+      throw new NotFoundException('Должность не найдена');
     }
     return result.rows[0];
   }
@@ -72,7 +72,7 @@ export class PositionsService {
       [id],
     );
     if (result.rows.length === 0) {
-      throw new NotFoundException('Position not found');
+      throw new NotFoundException('Должность не найдена');
     }
     return { message: 'Position soft deleted' };
   }

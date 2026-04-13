@@ -1,4 +1,4 @@
-export const up = (pgm) => {
+exports.up = (pgm) => {
   pgm.createTable('hr_operations', {
     id: 'id',
     employee_id: {
@@ -37,6 +37,6 @@ export const up = (pgm) => {
   });
 };
 
-export const down = (pgm) => {
+exports.down = (pgm) => {
   pgm.dropTable('hr_operations');
 };

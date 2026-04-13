@@ -17,7 +17,6 @@ export class EmployeesService {
       'last_name',
       'first_name',
       'patronymic',
-      'department_id,',
       'position_id',
       'birth_date',
       'passport_series',

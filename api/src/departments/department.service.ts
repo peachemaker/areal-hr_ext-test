@@ -59,7 +59,7 @@ export class DepartmentsService {
     `;
     const result = await this.pool.query(query, [id]);
     if (result.rows.length === 0) {
-      throw new NotFoundException('Department not found');
+      throw new NotFoundException('Отдел не найден');
     }
     return result.rows[0];
   }
@@ -73,7 +73,7 @@ export class DepartmentsService {
         [id],
       );
       if (currentState.rows.length === 0) {
-        throw new NotFoundException('Department not found');
+        throw new NotFoundException('Отдел не найден');
       }
       return currentState.rows[0];
     }
@@ -90,7 +90,7 @@ export class DepartmentsService {
     );
 
     if (result.rows.length === 0) {
-      throw new NotFoundException('Department not found');
+      throw new NotFoundException('Отдел не найден');
     }
 
     return result.rows[0];
@@ -104,7 +104,7 @@ export class DepartmentsService {
       [id],
     );
     if (result.rowCount === 0) {
-      throw new NotFoundException('Department not found');
+      throw new NotFoundException('Отдел не найден');
     }
     return { message: 'Department soft deleted' };
   }

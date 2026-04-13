@@ -1,9 +1,9 @@
-export const up = (pgm) => {
+exports.up = (pgm) => {
   pgm.addConstraint('departments', 'unique_org_id_name', {
     unique: ['organization_id', 'name'],
   });
 };
 
-export const down = (pgm) => {
+exports.down = (pgm) => {
   pgm.dropConstraint('departments', 'unique_org_id_name');
 };

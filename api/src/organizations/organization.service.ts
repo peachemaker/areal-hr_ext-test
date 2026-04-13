@@ -29,7 +29,7 @@ export class OrganizationsService {
       [id],
     );
     if (result.rows.length === 0) {
-      throw new NotFoundException('Organization not found');
+      throw new NotFoundException('Организация не найдена');
     }
     return result.rows[0];
   }
@@ -43,7 +43,7 @@ export class OrganizationsService {
         [id],
       );
       if (currentState.rows.length === 0) {
-        throw new NotFoundException('Organization not found');
+        throw new NotFoundException('Организация не найдена');
       }
       return currentState.rows[0];
     }
@@ -61,7 +61,7 @@ export class OrganizationsService {
       values,
     );
     if (result.rows.length === 0) {
-      throw new NotFoundException('Organization not found');
+      throw new NotFoundException('Организация не найдена');
     }
     return result.rows[0];
   }
@@ -72,7 +72,7 @@ export class OrganizationsService {
       [id],
     );
     if (result.rows.length === 0) {
-      throw new NotFoundException('Organization not found');
+      throw new NotFoundException('Организация не найдена');
     }
     return { message: 'Organization soft deleted' };
   }

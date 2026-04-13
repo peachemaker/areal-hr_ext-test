@@ -8,7 +8,7 @@ export class CreateHrOperationDto {
   @IsString()
   @IsOptional()
   @Length(1, 50)
-  action_type?: string;
+  action_type: string;
 
   @IsInt()
   @IsOptional()
@@ -20,7 +20,7 @@ export class CreateHrOperationDto {
 
   @IsNumber({}, { message: 'Зарплата должна быть числом' })
   @IsOptional()
-  salary?: number;
+  salary: number;
 
   @IsDateString({}, { message: 'Неверный формат даты (ISO 8601)' })
   @IsOptional()

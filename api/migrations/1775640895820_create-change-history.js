@@ -1,7 +1,7 @@
-export const up = (pgm) => {
+exports.up = (pgm) => {
   pgm.createTable('change_history', {
     id: 'id',
-    operation_date: {
+    operation_time: {
       type: 'timestamp',
       notNull: true,
       default: pgm.func('current_timestamp'),
@@ -30,6 +30,6 @@ export const up = (pgm) => {
   });
 };
 
-export const down = (pgm) => {
+exports.down = (pgm) => {
   pgm.dropTable('change_history');
 };

@@ -1,6 +1,16 @@
 exports.up = (pgm) => {
   pgm.createTable('employees', {
     id: 'id',
+    department_id: {
+      type: 'integer',
+      references: '"departments"',
+      onDelete: 'SET NULL',
+    },
+    position_id: {
+      type: 'integer',
+      references: '"positions"',
+      onDelete: 'SET NULL',
+    },
     last_name: { type: 'varchar(100)', notNull: true },
     first_name: { type: 'varchar(100)', notNull: true },
     patronymic: { type: 'varchar(100)' },

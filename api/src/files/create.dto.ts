@@ -1,4 +1,4 @@
-import { IsString, IsInt, IsNotEmpty, Length } from 'class-validator';
+import { IsString, IsInt, IsNotEmpty, Length, IsOptional } from 'class-validator';
 
 export class CreateFileDto {
   @IsInt({ message: 'ID сотрудника должен быть числом' })
@@ -6,12 +6,12 @@ export class CreateFileDto {
   employee_id?: number;
 
   @IsString()
-  @IsNotEmpty({ message: 'Имя файла обязательно' })
+  @IsOptional()
   @Length(1, 255)
   name?: string;
 
   @IsString()
-  @IsNotEmpty({ message: 'Путь к файлу обязателен' })
+  @IsOptional()
   @Length(1, 500)
   path?: string;
 }
