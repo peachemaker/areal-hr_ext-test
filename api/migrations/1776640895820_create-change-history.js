@@ -6,11 +6,11 @@ exports.up = (pgm) => {
       notNull: true,
       default: pgm.func('current_timestamp'),
     },
-    // user_id: {
-    //   type: 'integer',
-    //   references: '"users"',
-    //   onDelete: 'SET NULL',
-    // },
+    user_id: {
+      type: 'integer',
+      references: '"users"',
+      onDelete: 'SET NULL',
+    },
     target: { type: 'varchar(50)', notNull: true },
     target_id: { type: 'integer', notNull: true },
     field_name: { type: 'varchar(100)', notNull: true },
