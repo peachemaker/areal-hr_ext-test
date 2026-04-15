@@ -11,6 +11,7 @@ import { EmployeesModule } from './employees/employee.module';
 import { FilesModule } from './files/file.module';
 import { HrOperationsModule } from './hr_operations/hr_op.module';
 import { ChangeHistoryModule } from './change_history/change_history.module';
+import { UsersModule } from './users/user.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -24,7 +25,8 @@ import { ChangeHistoryModule } from './change_history/change_history.module';
     EmployeesModule,
     FilesModule,
     HrOperationsModule,
-    ChangeHistoryModule
+    ChangeHistoryModule,
+    UsersModule
   ],
   controllers: [AppController],
   providers: [AppService],
