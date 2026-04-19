@@ -1,17 +1,17 @@
-FROM node:20-alpine AS builder
-WORKDIR /app
-COPY api/package*.json ./
+FROM node:22-alpine AS builder
+WORKDIR usr/src/app
+COPY package*.json ./
 RUN npm ci
-COPY api/ .
+COPY . .
 RUN npm run build
 
-FROM node:20-alpine AS runner
-WORKDIR /app
+FROM node:22-alpine AS runner
+WORKDIR usr/src/app
 ENV NODE_ENV=production
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./
-COPY --from=builder /app/migrations ./migrations
+COPY --from=builder usr/src/app/dist ./dist
+COPY --from=builder usr/src/app/node_modules ./node_modules
+COPY --from=builder usr/src/app/package.json ./
+COPY --from=builder usr/src/app/migrations ./migrations
 
 EXPOSE 3000
 CMD ["node", "dist/main"]
