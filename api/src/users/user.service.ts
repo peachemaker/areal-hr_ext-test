@@ -85,4 +85,27 @@ export class UsersService {
     }
     return { message: 'Пользователь успешно удален' };
   }
+
+  async update(id: number, data: any) {
+  if (data.password && data.password.trim() !== '') {
+    const argon2 = require('argon2');
+    const hashedPassword = await argon2.hash(data.password, { type: argon2.argon2id });
+    
+    await this.pool.query(
+      `UPDATE users 
+       SET last_name = $1, first_name = $2, patronymic = $3, login = $4, password = $5, role_id = $6 
+       WHERE id = $7`,
+      [data.last_name, data.first_name, data.patronymic, data.login, hashedPassword, data.role_id, id]
+    );
+  } else {
+    await this.pool.query(
+      `UPDATE users 
+       SET last_name = $1, first_name = $2, patronymic = $3, login = $4, role_id = $5 
+       WHERE id = $6`,
+      [data.last_name, data.first_name, data.patronymic, data.login, data.role_id, id]
+    );
+  }
+  
+  return { message: 'Пользователь успешно обновлен' };
+}
 }

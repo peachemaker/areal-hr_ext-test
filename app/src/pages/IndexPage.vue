@@ -1,0 +1,1 @@
+<template><q-page>Привет</q-page></template>
