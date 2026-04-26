@@ -6,13 +6,18 @@ import {
   Param,
   Delete,
   ParseIntPipe,
-  Put
+  Put,
+  UseGuards
 } from '@nestjs/common';
 import { UsersService } from './user.service';
 import { CreateUserDto } from './create.dto';
 import { UpdateUserDto } from './update.dto';
+import { AuthenticatedGuard } from '../auth/authenticated.guard';
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/roles.decorator';
 
-@Controller('users')
+// @Controller('users')
+// @UseGuards(AuthenticatedGuard, RolesGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -31,6 +36,7 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
+  @Roles(1)
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.remove(id);
@@ -39,8 +45,9 @@ export class UsersController {
   @Put(':id')
   async update(
     @Param('id') id: string,
-    @Body() updateUserDto: UpdateUserDto, // Используем наш класс здесь
+    @Body() updateUserDto: UpdateUserDto,
   ) {
     return this.usersService.update(+id, updateUserDto);
   }
+  
 }

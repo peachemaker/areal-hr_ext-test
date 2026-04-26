@@ -20,8 +20,10 @@ export const useAuthStore = defineStore('auth', {
       try {
         const response = await api.get('/auth/profile');
         this.user = response.data;
+        return true;
       } catch (error) {
         this.user = null;
+        return false;
       }
     },
 

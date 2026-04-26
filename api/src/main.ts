@@ -21,10 +21,15 @@ async function bootstrap() {
   });
   app.use(
     session({
-      secret: 'super-secret-key', 
+      secret: 'super-secret-key',
       resave: false,
       saveUninitialized: false,
-      cookie: { maxAge: 3600000 }, 
+      cookie: {
+        maxAge: 3600000,
+        httpOnly: true,
+        secure: false,
+        sameSite: 'lax'
+      },
     }),
   );
 

@@ -10,21 +10,24 @@ export default route(function ({ store }) {
     history: createWebHistory(process.env.VUE_ROUTER_BASE),
   });
 
-  Router.beforeEach(async (to) => {
-    if (!store) return true;
-    const authStore = useAuthStore(store);
-    if (to.path === '/login') return true;
+  Router.beforeEach(async (to, from, next) => {
+    const authStore = useAuthStore();
+
     if (!authStore.user) {
-      try {
-        await authStore.fetchProfile();
-      } catch {}
+      await authStore.fetchProfile();
+    }
+    const isAuthenticated = !!authStore.user;
+    if (to.meta.requiresAuth && !isAuthenticated) {
+      return next('/login');
+    }
+    if (to.path === '/login' && isAuthenticated) {
+      return next('/');
+    }
+    if (to.path === '/users' && authStore.user?.role_id !== 1) {
+      return next('/'); 
     }
 
-    if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-      return { path: '/login' };
-    }
-
-    return true;
+    next();
   });
 
   return Router;

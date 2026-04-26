@@ -28,7 +28,7 @@ import { AuthModule } from './auth/auth.module';
     HrOperationsModule,
     ChangeHistoryModule,
     UsersModule,
-    AuthModule
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
