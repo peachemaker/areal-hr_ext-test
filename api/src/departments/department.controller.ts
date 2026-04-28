@@ -1,9 +1,11 @@
-import { Controller, Get, Post, Patch, Delete, Body, Param, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Body, Param, HttpCode, HttpStatus, UseGuards } from '@nestjs/common';
 import { DepartmentsService } from './department.service';
 import { CreateDepartmentDto } from './create.dto';
 import { UpdateDepartmentDto } from './update.dto';
+import { AuthenticatedGuard } from '../auth/authenticated.guard';
 
 @Controller('departments')
+@UseGuards(AuthenticatedGuard)
 export class DepartmentsController {
   constructor(private readonly departmentsService: DepartmentsService) {}
 

@@ -1,9 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { EmployeesService } from './employee.service';
 import { CreateEmployeeDto } from './create.dto';
 import { UpdateEmployeeDto } from './update.dto';
+import { AuthenticatedGuard } from '../auth/authenticated.guard';
 
 @Controller('employees')
+@UseGuards(AuthenticatedGuard)
 export class EmployeesController {
   constructor(private readonly employeesService: EmployeesService) {}
 

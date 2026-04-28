@@ -1,9 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { HrOperationsService } from './hr_op.service';
 import { CreateHrOperationDto } from './create.dto';
 import { UpdateHrOperationDto } from './update.dto';
+import { AuthenticatedGuard } from '../auth/authenticated.guard';
 
 @Controller('hr-operations')
+@UseGuards(AuthenticatedGuard)
 export class HrOperationsController {
   constructor(private readonly hrOperationsService: HrOperationsService) {}
 

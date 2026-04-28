@@ -10,6 +10,7 @@ import {
   UseInterceptors,
   UploadedFile,
   BadRequestException,
+  UseGuards,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -17,8 +18,10 @@ import { extname } from 'path';
 import { FilesService } from './file.service';
 import { CreateFileDto } from './create.dto';
 import { UpdateFileDto } from './update.dto';
+import { AuthenticatedGuard } from '../auth/authenticated.guard';
 
 @Controller('files')
+@UseGuards(AuthenticatedGuard)
 export class FilesController {
   constructor(private readonly filesService: FilesService) {}
 
@@ -46,8 +49,8 @@ export class FilesController {
       );
     }
     const dtoWithFilePath = {
-      employee_id: Number(createFileDto.employee_id), 
-      name: file.originalname, 
+      employee_id: Number(createFileDto.employee_id),
+      name: file.originalname,
       path: file.path,
     };
     return this.filesService.create(dtoWithFilePath);
