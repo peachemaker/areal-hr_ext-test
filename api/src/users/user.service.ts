@@ -57,18 +57,14 @@ export class UsersService {
     return result.rows;
   }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<any> {
     const query = `
       SELECT id, last_name, first_name, patronymic, login, role_id 
       FROM users 
       WHERE id = $1 AND deleted_at IS NULL;
     `;
     const result = await this.pool.query(query, [id]);
-
-    if (result.rowCount === 0) {
-      throw new NotFoundException('Пользователь не найден');
-    }
-    return result.rows[0];
+    return result.rows[0] || null;
   }
 
   async remove(id: number) {

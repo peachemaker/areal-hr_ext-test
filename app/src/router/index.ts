@@ -10,7 +10,7 @@ export default route(function ({ store }) {
     history: createWebHistory(process.env.VUE_ROUTER_BASE),
   });
 
-  Router.beforeEach(async (to, from, next) => {
+  Router.beforeEach(async (to, from) => {
     const authStore = useAuthStore();
 
     if (!authStore.user) {
@@ -18,16 +18,9 @@ export default route(function ({ store }) {
     }
     const isAuthenticated = !!authStore.user;
     if (to.meta.requiresAuth && !isAuthenticated) {
-      return next('/login');
+      return '/login';
     }
-    if (to.path === '/login' && isAuthenticated) {
-      return next('/');
-    }
-    if (to.path === '/users' && authStore.user?.role_id !== 1) {
-      return next('/'); 
-    }
-
-    next();
+    return true;
   });
 
   return Router;
