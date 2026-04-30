@@ -7,7 +7,9 @@ import {
   Delete,
   ParseIntPipe,
   Put,
-  UseGuards
+  UseGuards,
+  Request,
+  BadRequestException
 } from '@nestjs/common';
 import { UsersService } from './user.service';
 import { CreateUserDto } from './create.dto';
@@ -38,16 +40,18 @@ export class UsersController {
 
   @Roles(1)
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
+  remove(@Param('id', ParseIntPipe) id: number, @Request() req) {
+    const currentUser = req.user;
+    if (currentUser && currentUser.id === id) {
+      throw new BadRequestException(
+        'Вы не можете удалить свою собственную учетную запись',
+      );
+    }
     return this.usersService.remove(id);
   }
 
   @Put(':id')
-  async update(
-    @Param('id') id: string,
-    @Body() updateUserDto: UpdateUserDto,
-  ) {
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(+id, updateUserDto);
   }
-  
 }

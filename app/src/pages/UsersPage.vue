@@ -22,7 +22,18 @@
       <template v-slot:body-cell-actions="props">
         <q-td :props="props" class="text-right">
           <q-btn flat round color="primary" icon="edit" @click="openDialog(props.row)" />
-          <q-btn flat round color="negative" icon="delete" @click="confirmDelete(props.row.id)" />
+          <q-btn
+            flat
+            round
+            icon="delete"
+            :color="currentUser && props.row.id === currentUser.id ? 'grey' : 'negative'"
+            :disable="currentUser && props.row.id === currentUser.id"
+            @click="confirmDelete(props.row.id)"
+          >
+            <q-tooltip v-if="currentUser && props.row.id === currentUser.id">
+              Вы не можете удалить свою учетную запись
+            </q-tooltip>
+          </q-btn>
         </q-td>
       </template>
     </q-table>
@@ -223,7 +234,19 @@ const confirmDelete = (id: number) => {
   });
 };
 
+const currentUser = ref<any>(null);
+
+const fetchProfile = async () => {
+  try {
+    const res = await api.get('/auth/profile');
+    currentUser.value = res.data;
+  } catch (e) {
+    console.error('Не удалось загрузить профиль');
+  }
+};
+
 onMounted(() => {
   fetchUsers();
+  fetchProfile();
 });
 </script>
