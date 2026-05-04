@@ -39,7 +39,7 @@ async function bootstrap() {
         tableName: 'session',
         createTableIfMissing: false,
       }),
-      secret: 'super-secret-key',
+      secret: process.env.SESSION_SECRET || 'krutoy_secret',
       resave: false,
       saveUninitialized: false,
       cookie: {

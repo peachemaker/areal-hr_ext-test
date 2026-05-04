@@ -135,14 +135,9 @@ const formData = ref({
 
 const columns = [
   { name: 'id', label: 'ID', field: 'id', align: 'left' as const, sortable: true },
-  {
-    name: 'last_name',
-    label: 'Фамилия',
-    field: 'last_name',
-    align: 'left' as const,
-    sortable: true,
-  },
+  { name: 'last_name', label: 'Фамилия', field: 'last_name', align: 'left' as const, sortable: true,},
   { name: 'first_name', label: 'Имя', field: 'first_name', align: 'left' as const },
+  { name: 'patronymic', label: 'Отчество', field: 'patronymic', align: 'left' as const },
   { name: 'login', label: 'Логин', field: 'login', align: 'left' as const },
   { name: 'role', label: 'Роль', field: 'role', align: 'center' as const },
   { name: 'actions', label: 'Действия', field: 'actions', align: 'right' as const },

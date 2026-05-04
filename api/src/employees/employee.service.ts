@@ -70,6 +70,7 @@ export class EmployeesService {
   }
 
   async update(id: number, updateEmployeeDto: UpdateEmployeeDto) {
+    
     const keys = Object.keys(updateEmployeeDto);
     if (keys.length === 0) {
       return this.findOne(id);
@@ -112,3 +113,4 @@ export class EmployeesService {
     return { message: `Сотрудник с ID ${id} успешно удален` };
   }
 }
+

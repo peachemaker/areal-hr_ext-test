@@ -30,6 +30,7 @@ services:
       DB_NAME: ${DB_NAME}
       PORT: ${PORT}
       DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
+      SESSION_SECRET: ${SESSION_SECRET}
     ports:
       - "${PORT}:${PORT}"
     depends_on:
@@ -49,6 +50,8 @@ services:
       dockerfile: ../containers/app/Dockerfile
     container_name: hr_app
     restart: always
+    environment:
+      VITE_API_URL: ${VITE_API_URL}
     ports:
       - "8080:8080"
     volumes:

@@ -7,10 +7,10 @@ declare module '@vue/runtime-core' {
     $api: AxiosInstance;
   }
 }
-
-const api = axios.create({ 
-  baseURL: 'http://localhost:3000', 
-  withCredentials: true 
+const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const api = axios.create({
+  baseURL: baseURL,
+  withCredentials: true,
 });
 
 export default boot(({ app }) => {

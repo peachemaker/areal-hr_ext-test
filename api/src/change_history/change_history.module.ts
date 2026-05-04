@@ -5,5 +5,6 @@ import { ChangeHistoryController } from './change_history.controller';
 @Module({
   controllers: [ChangeHistoryController],
   providers: [ChangeHistoryService],
+  exports: [ChangeHistoryService]
 })
 export class ChangeHistoryModule {}

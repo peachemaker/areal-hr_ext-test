@@ -20,12 +20,13 @@ import { Roles } from '../auth/roles.decorator';
 
 @Controller('users')
 @UseGuards(AuthenticatedGuard, RolesGuard)
+@Roles(1)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  create(@Body() createUserDto: CreateUserDto, @Request() req) {
+    return this.usersService.create(createUserDto, req.user.id);
   }
 
   @Get()
@@ -47,11 +48,11 @@ export class UsersController {
         'Вы не можете удалить свою собственную учетную запись',
       );
     }
-    return this.usersService.remove(id);
+    return this.usersService.remove(id, req.user.id);
   }
 
   @Put(':id')
-  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto, @Request() req) {
+    return this.usersService.update(+id, updateUserDto, req.user.id);
   }
 }

@@ -21,9 +21,9 @@ export class CreateChangeHistoryDto {
 
   @IsString()
   @IsOptional()
-  old_value?: string;
+  old_value: string | null;
 
   @IsString()
   @IsOptional()
-  new_value?: string;
+  new_value: string | null;
 }
