@@ -1,3 +1,4 @@
+import OrganizationsPage from 'src/pages/OrganizationsPage.vue';
 import { RouteRecordRaw } from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
@@ -19,6 +20,16 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/UsersPage.vue'),
         meta: { requiresAuth: true },
       },
+      {
+        path: 'organizations',
+        component: () => import('pages/OrganizationsPage.vue'),
+        meta: { requiredAuth: true }
+      },
+      {
+        path: 'departments',
+        component: () => import('pages/DepartmentsPage.vue'),
+        meta: { requiredAuth: true }
+      }
     ],
   },
   {

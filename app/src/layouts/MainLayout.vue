@@ -27,6 +27,16 @@
           <q-item-section>Сотрудники</q-item-section>
         </q-item>
 
+        <q-item clickable v-ripple to="/organizations">
+          <q-item-section avatar><q-icon name="apartment"/></q-item-section>
+          <q-item-section>Организации</q-item-section>
+        </q-item>
+
+        <q-item clickable v-ripple to="/departments">
+          <q-item-section avatar><q-icon name="workspaces"/></q-item-section>
+          <q-item-section>Отделы</q-item-section>
+        </q-item>
+
         <q-item 
           v-if="authStore.user?.role_id === 1" 
           clickable 
