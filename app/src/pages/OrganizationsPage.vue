@@ -2,7 +2,12 @@
   <q-page padding>
     <div class="text-h5 q-mb-md">Организации</div>
 
-    <q-table :rows="rows" :columns="columns" row-key="id" :loading="loading">
+    <q-table 
+      :rows="orgStore.organizations" 
+      :columns="columns" 
+      row-key="id" 
+      :loading="orgStore.loading"
+    >
       <template v-slot:top-right>
         <q-btn color="primary" label="Добавить организацию" @click="openDialog()" />
       </template>
@@ -52,16 +57,15 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { api } from 'boot/axios';
+import { useOrganizationStore } from 'src/stores/organization';
 import { useQuasar } from 'quasar';
 
 const $q = useQuasar();
-const rows = ref<any[]>([]);
-const loading = ref(false);
+const orgStore = useOrganizationStore();
+
 const dialogVisible = ref(false);
 const isEdit = ref(false);
 const currentId = ref<number | null>(null);
-
 const formData = ref({ name: '', comment: '' });
 
 const columns = [
@@ -70,18 +74,6 @@ const columns = [
   { name: 'comment', label: 'Комментарий', field: 'comment', align: 'left' as const },
   { name: 'actions', label: 'Действия', field: 'actions', align: 'right' as const },
 ];
-
-const fetchData = async () => {
-  loading.value = true;
-  try {
-    const res = await api.get('/organizations');
-    rows.value = res.data;
-  } catch (error) {
-    $q.notify({ type: 'negative', message: 'Ошибка загрузки' });
-  } finally {
-    loading.value = false;
-  }
-};
 
 const openDialog = (row: any = null) => {
   isEdit.value = !!row;
@@ -92,29 +84,38 @@ const openDialog = (row: any = null) => {
 
 const saveData = async () => {
   try {
-    if (isEdit.value) await api.put(`/organizations/${currentId.value}`, formData.value);
-    else await api.post('/organizations', formData.value);
-    $q.notify({ type: 'positive', message: 'Сохранено' });
+    if (isEdit.value && currentId.value) {
+      await orgStore.update(currentId.value, formData.value);
+    } else {
+      await orgStore.create(formData.value);
+    }
+    $q.notify({ type: 'positive', message: 'Сохранено успешно' });
     dialogVisible.value = false;
-    fetchData();
   } catch (error: any) {
-    $q.notify({ type: 'negative', message: error.response?.data?.message || 'Ошибка сохранения' });
+    $q.notify({ 
+      type: 'negative', 
+      message: error.response?.data?.message || 'Ошибка сохранения' 
+    });
   }
 };
 
 const confirmDelete = (id: number) => {
-  $q.dialog({ title: 'Подтверждение', message: 'Удалить организацию?', cancel: true }).onOk(
-    async () => {
-      try {
-        await api.delete(`/organizations/${id}`);
-        $q.notify({ type: 'positive', message: 'Удалено' });
-        fetchData();
-      } catch (error) {
-        $q.notify({ type: 'negative', message: 'Ошибка удаления' });
-      }
-    },
-  );
+  $q.dialog({
+    title: 'Подтверждение',
+    message: 'Удалить организацию?',
+    cancel: true,
+    persistent: true
+  }).onOk(async () => {
+    try {
+      await orgStore.remove(id);
+      $q.notify({ type: 'positive', message: 'Удалено' });
+    } catch (error) {
+      $q.notify({ type: 'negative', message: 'Ошибка удаления' });
+    }
+  });
 };
 
-onMounted(() => fetchData());
+onMounted(() => {
+  orgStore.fetchOrganizations();
+});
 </script>
