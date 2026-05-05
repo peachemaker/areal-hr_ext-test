@@ -1,9 +1,9 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import session from 'express-session'; // Используем * as для корректного импорта
+import session from 'express-session'; 
 import passport from 'passport';
-const pgSession = require('connect-pg-simple')(session); // Инициализация хранилища
+const pgSession = require('connect-pg-simple')(session); 
 import { Pool } from 'pg';
 
 async function bootstrap() {
