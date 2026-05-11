@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseGuards, UseInterceptors, UploadedFiles } from '@nestjs/common';
 import { EmployeesService } from './employee.service';
 import { CreateEmployeeDto } from './create.dto';
 import { UpdateEmployeeDto } from './update.dto';
 import { AuthenticatedGuard } from '../auth/authenticated.guard';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('employees')
 @UseGuards(AuthenticatedGuard)
@@ -10,8 +11,12 @@ export class EmployeesController {
   constructor(private readonly employeesService: EmployeesService) {}
 
   @Post()
-  create(@Body() createEmployeeDto: CreateEmployeeDto) {
-    return this.employeesService.create(createEmployeeDto);
+  @UseInterceptors(FilesInterceptor('scans'))
+  create(
+    @Body() createEmployeeDto: CreateEmployeeDto,
+    @UploadedFiles() files: Express.Multer.File[] 
+  ) {
+    return this.employeesService.create(createEmployeeDto, files);
   }
 
   @Get()
@@ -25,11 +30,13 @@ export class EmployeesController {
   }
 
   @Patch(':id')
+  @UseInterceptors(FilesInterceptor('scans'))
   update(
     @Param('id', ParseIntPipe) id: number, 
-    @Body() updateEmployeeDto: UpdateEmployeeDto
+    @Body() updateEmployeeDto: UpdateEmployeeDto,
+    @UploadedFiles() files: Express.Multer.File[] 
   ) {
-    return this.employeesService.update(id, updateEmployeeDto);
+    return this.employeesService.update(id, updateEmployeeDto, files);
   }
 
   @Delete(':id')

@@ -37,6 +37,16 @@
           <q-item-section>Отделы</q-item-section>
         </q-item>
 
+        <q-item clickable v-ripple to="/positions">
+          <q-item-section avatar><q-icon name="ballot"/></q-item-section>
+          <q-item-section>Должности</q-item-section>
+        </q-item>
+
+        <q-item clickable v-ripple to="/hr-operations">
+          <q-item-section avatar><q-icon name="article"/></q-item-section>
+          <q-item-section>Кадровые операции</q-item-section>
+        </q-item>
+
         <q-item 
           v-if="authStore.user?.role_id === 1" 
           clickable 

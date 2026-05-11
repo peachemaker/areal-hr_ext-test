@@ -12,7 +12,7 @@ import { UpdateEmployeeDto } from './update.dto';
 export class EmployeesService {
   constructor(@Inject('PG_POOL') private pool: Pool) {}
 
-  async create(createEmployeeDto: CreateEmployeeDto) {
+  async create(createEmployeeDto: CreateEmployeeDto, files: Express.Multer.File[]) {
     const allowedKeys = [
       'last_name',
       'first_name',
@@ -69,7 +69,7 @@ export class EmployeesService {
     return result.rows[0];
   }
 
-  async update(id: number, updateEmployeeDto: UpdateEmployeeDto) {
+  async update(id: number, updateEmployeeDto: UpdateEmployeeDto, files: Express.Multer.File[]) {
     
     const keys = Object.keys(updateEmployeeDto);
     if (keys.length === 0) {

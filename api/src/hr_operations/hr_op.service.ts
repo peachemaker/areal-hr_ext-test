@@ -14,44 +14,66 @@ export class HrOperationsService {
 
   async create(createDto: CreateHrOperationDto) {
     const employeeCheck = await this.pool.query(
-      'SELECT id FROM employees WHERE id=$1 AND deleted_at is NULL', [createDto.employee_id]
+      'SELECT id FROM employees WHERE id=$1 AND deleted_at is NULL',
+      [createDto.employee_id],
     );
     if (employeeCheck.rows.length === 0) {
       throw new NotFoundException(`Сотрудник с ID ${createDto.employee_id} не найден`);
     }
-    const allowedKeys = [
-      'employee_id',
-      'action_type',
-      'department_id',
-      'position_id',
-      'salary',
-    ];
-    const keys = Object.keys(createDto).filter((key) =>
-      allowedKeys.includes(key),
-    );
+
+    const allowedKeys = ['employee_id', 'action_type', 'department_id', 'position_id', 'salary'];
+    const keys = Object.keys(createDto).filter((key) => allowedKeys.includes(key));
+
     if (keys.length === 0) {
       throw new BadRequestException('Валидные поля не были переданы');
     }
+
     const columns = keys.join(', ');
-    const values = keys.map(
-      (key) => createDto[key as keyof CreateHrOperationDto],
-    );
+    const values = keys.map((key) => createDto[key as keyof CreateHrOperationDto]);
     const placeholders = keys.map((_, index) => `$${index + 1}`).join(', ');
 
-    const query = `
+    const insertQuery = `
       INSERT INTO hr_operations (${columns}) 
       VALUES (${placeholders}) 
-      RETURNING *;
+      RETURNING id;
     `;
+    const insertResult = await this.pool.query(insertQuery, values);
+    const newId = insertResult.rows[0].id;
 
-    const result = await this.pool.query(query, values);
-    return result.rows[0];
+    const fullResult = await this.pool.query(`
+      SELECT 
+        o.*, 
+        json_build_object(
+          'id', e.id, 
+          'first_name', e.first_name, 
+          'last_name', e.last_name,
+          'patronymic', e.patronymic
+        ) AS employee
+      FROM hr_operations o
+      LEFT JOIN employees e ON o.employee_id = e.id
+      WHERE o.id = $1
+    `, [newId]);
+
+    return fullResult.rows[0];
   }
 
   async findAll() {
-    const query = `SELECT * FROM hr_operations WHERE deleted_at IS NULL ORDER BY operation_date DESC;`;
+    const query = `
+      SELECT 
+        o.*, 
+        json_build_object(
+          'id', e.id, 
+          'first_name', e.first_name, 
+          'last_name', e.last_name,
+          'patronymic', e.patronymic
+        ) AS employee
+      FROM hr_operations o
+      LEFT JOIN employees e ON o.employee_id = e.id
+      WHERE o.deleted_at IS NULL 
+      ORDER BY o.operation_date DESC;
+    `;
     const result = await this.pool.query(query);
-    return result.rows;
+    return result.rows; 
   }
 
   async findByEmployee(employeeId: number) {
