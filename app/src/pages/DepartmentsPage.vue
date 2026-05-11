@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <div class="text-h5 q-mb-md">Отделы</div>
+    <div class="text-h5 text-weight-bold">Отделы</div>
 
     <q-table
       :rows="deptStore.departments"
@@ -9,7 +9,7 @@
       :loading="deptStore.loading"
     >
       <template v-slot:top-right>
-        <q-btn color="primary" label="Добавить отдел" @click="openDialog()" />
+        <q-btn color="primary" icon="add" label="Добавить отдел" @click="openDialog()" />
       </template>
 
       <template v-slot:body-cell-actions="props">

@@ -3,6 +3,7 @@ import {
   Inject,
   ConflictException,
   NotFoundException,
+  OnModuleInit
 } from '@nestjs/common';
 import * as argon2 from 'argon2';
 import { Pool } from 'pg';
@@ -10,11 +11,39 @@ import { CreateUserDto } from './create.dto';
 import { ChangeHistoryService } from '../change_history/change_history.service';
 
 @Injectable()
-export class UsersService {
+export class UsersService implements OnModuleInit {
   constructor(
     @Inject('PG_POOL') private pool: Pool,
     private readonly historyService: ChangeHistoryService,
   ) {}
+
+  async onModuleInit(){
+    await this.seedSuperUser();
+  }
+
+  private async seedSuperUser() {
+    try{
+      const res = await this.pool.query('SELECT COUNT(*) FROM users');
+      const usersCount = parseInt(res.rows[0].count, 10);
+
+      if (usersCount === 0) {
+        const passwordHash = await argon2.hash('admin', {
+          type: argon2.argon2id
+        });
+
+        const query = `
+        INSERT INTO users (last_name, first_name, patronymic, login, password_hash, role_id)
+        VALUES ($1, $2, $3, $4, $5, $6)`;
+
+        const values = ['Админ', 'админ', '', 'admin', passwordHash, 1]
+        await this.pool.query(query, values); 
+        
+        console.log('Суперпользователь успешно создан');
+      }
+    } 
+    catch (error) {
+    }
+  }
 
   async create(dto: CreateUserDto, executorId: number) {
     const passwordHash = await argon2.hash(dto.password, {

@@ -14,8 +14,8 @@ exports.up = (pgm) => {
     target: { type: 'varchar(50)', notNull: true },
     target_id: { type: 'integer', notNull: true },
     field_name: { type: 'varchar(100)', notNull: true },
-    old_value: { type: 'text', notNull: true },
-    new_value: { type: 'text', notNull: true },
+    old_value: { type: 'text', notNull: false },
+    new_value: { type: 'text', notNull: false },
     created_at: {
       type: 'timestamp',
       notNull: true,

@@ -1,10 +1,10 @@
 <template>
   <q-page padding>
-    <div class="text-h5 q-mb-md">Управление пользователями</div>
+    <div class="text-h5 text-weight-bold">Управление пользователями</div>
 
     <q-table :rows="users" :columns="columns" row-key="id" :loading="loading">
       <template v-slot:top-right>
-        <q-btn color="primary" label="Добавить пользователя" @click="openDialog()" />
+        <q-btn color="primary" icon="add" label="Добавить пользователя" @click="openDialog()" />
       </template>
 
       <template v-slot:body-cell-role="props">
@@ -135,7 +135,13 @@ const formData = ref({
 
 const columns = [
   { name: 'id', label: 'ID', field: 'id', align: 'left' as const, sortable: true },
-  { name: 'last_name', label: 'Фамилия', field: 'last_name', align: 'left' as const, sortable: true,},
+  {
+    name: 'last_name',
+    label: 'Фамилия',
+    field: 'last_name',
+    align: 'left' as const,
+    sortable: true,
+  },
   { name: 'first_name', label: 'Имя', field: 'first_name', align: 'left' as const },
   { name: 'patronymic', label: 'Отчество', field: 'patronymic', align: 'left' as const },
   { name: 'login', label: 'Логин', field: 'login', align: 'left' as const },

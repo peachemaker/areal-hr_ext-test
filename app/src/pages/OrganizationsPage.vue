@@ -1,15 +1,15 @@
 <template>
   <q-page padding>
-    <div class="text-h5 q-mb-md">Организации</div>
+    <div class="text-h5 text-weight-bold">Организации</div>
 
-    <q-table 
-      :rows="orgStore.organizations" 
-      :columns="columns" 
-      row-key="id" 
+    <q-table
+      :rows="orgStore.organizations"
+      :columns="columns"
+      row-key="id"
       :loading="orgStore.loading"
     >
       <template v-slot:top-right>
-        <q-btn color="primary" label="Добавить организацию" @click="openDialog()" />
+        <q-btn color="primary" icon="add" label="Добавить организацию" @click="openDialog()" />
       </template>
 
       <template v-slot:body-cell-actions="props">
@@ -92,9 +92,9 @@ const saveData = async () => {
     $q.notify({ type: 'positive', message: 'Сохранено успешно' });
     dialogVisible.value = false;
   } catch (error: any) {
-    $q.notify({ 
-      type: 'negative', 
-      message: error.response?.data?.message || 'Ошибка сохранения' 
+    $q.notify({
+      type: 'negative',
+      message: error.response?.data?.message || 'Ошибка сохранения',
     });
   }
 };
@@ -104,7 +104,7 @@ const confirmDelete = (id: number) => {
     title: 'Подтверждение',
     message: 'Удалить организацию?',
     cancel: true,
-    persistent: true
+    persistent: true,
   }).onOk(async () => {
     try {
       await orgStore.remove(id);

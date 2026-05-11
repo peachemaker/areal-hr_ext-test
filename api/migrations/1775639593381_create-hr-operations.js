@@ -17,7 +17,7 @@ exports.up = (pgm) => {
       references: '"positions"',
       onDelete: 'SET NULL',
     },
-    salary: { type: 'numeric(15, 2)', notNull: true },
+    salary: { type: 'numeric(15, 2)'},
     operation_date: {
       type: 'timestamp',
       notNull: true,
